@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.beikbank.dao.BKUserDao">
+
+
+    <!--标的管理-->
+    <resultMap id="UserControlResultMap" type="com.beikbank.bean.vo.UserListVO">
+        <result column="user_code" property="userCode" jdbcType="VARCHAR"/>
+        <result column="register_time" property="registerTime" jdbcType="VARCHAR"/>
+        <result column="phone_number" property="phoneNumber" jdbcType="VARCHAR"/>
+        <result column="id_number" property="idNumber" jdbcType="VARCHAR"/>
+        <result column="real_name_time" property="realNameTime" jdbcType="VARCHAR"/>
+        <result column="real_name" property="realName" jdbcType="VARCHAR"/>
+        <result column="bank_name" property="bankName" jdbcType="VARCHAR"/>
+        <result column="binding_status" property="bindingStatus" jdbcType="VARCHAR"/>
+        <result column="acc_number" property="accNumber" jdbcType="VARCHAR"/>
+        <result column="last_login_time" property="lastLoginTime" jdbcType="VARCHAR"/>
+        <result column="amount_sum" property="amountSum" jdbcType="VARCHAR"/>
+    </resultMap>
+
+
+    <select id="userListSearch" parameterType="com.beikbank.bean.qo.UserListQO"
+            resultMap="UserControlResultMap">
+        SELECT a.user_temp_code as user_code,a.register_time,a.phone_number,f.id_number,
+        f.create_time AS real_name_time,c.real_name,e.bank_name,d.binding_status,d.acc_number,
+        a.update_time AS last_login_time,TRUNCATE(g.amount,2) AS amount_sum
+        FROM beikbank_user.t_uls_user_info a
+        LEFT JOIN beikbank_base_user.t_uls_user b ON(a.user_temp_code=b.user_code)
+        LEFT JOIN beikbank_base_user.t_uls_real_name_info c ON(b.user_id=c.user_id)
+        LEFT JOIN beikbank_pay.t_uls_user_binding_card d ON(a.user_temp_code=d.user_code AND d.binding_status=0 AND
+        d.status=0)
+        LEFT JOIN beikbank_pay.t_dmn_bank e ON(d.bank_id=e.bank_id)
+        LEFT JOIN beikbank_base_user.t_uls_user_idcard f ON(b.user_id=f.user_id AND f.status=0)
+        LEFT JOIN (SELECT sum(acc.acc_amount) AS amount,map.user_code AS user_code FROM
+        beikbank_user.t_uls_accounts acc,beikbank_user.t_uls_acc_user_mapping map
+        WHERE map.acc_type_id=1 AND map.acc_id=acc.acc_id GROUP BY map.user_code) g ON(a.user_temp_code=g.user_code)
+        WHERE a.status=0
+        <if test="userCode != null and userCode!=''">
+            AND a.user_temp_code = #{userCode}
+        </if>
+        <if test="phoneNumber != null and phoneNumber!=''">
+            AND a.phone_number = #{phoneNumber}
+        </if>
+        <if test="idNumber != null and idNumber!=''">
+            AND f.id_number = #{idNumber}
+        </if>
+        <if test="realName != null and realName!=''">
+            AND c.real_name = #{realName}
+        </if>
+        <if test="registerTimeStart != null and registerTimeStart!=''">
+            AND a.register_time &gt;= #{registerTimeStart}
+        </if>
+        <if test="registerTimeEnd != null and registerTimeEnd!=''">
+            AND a.register_time &lt;= #{registerTimeEnd}
+        </if>
+        <if test="amountSumStart != null and amountSumStart!=''">
+            AND g.amount &gt;= #{amountSumStart}
+        </if>
+        <if test="amountSumEnd != null and amountSumEnd!=''">
+            AND g.amount &lt;= #{amountSumEnd}
+        </if>
+        ORDER BY g.amount DESC
+
+    </select>
+
+
+
+
+
+</mapper>

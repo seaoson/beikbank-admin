@@ -1,0 +1,45 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>com.beikbank</groupId>
+        <artifactId>beikbank-security</artifactId>
+        <version>${cy-version}</version>
+	</parent>
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>beikbank-web</artifactId>
+	<packaging>war</packaging>
+    <description>管理后台</description>
+	
+	<dependencies>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.16.10</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.beikbank</groupId>
+            <artifactId>beikbank-common</artifactId>
+            <version>${cy-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.beikbank</groupId>
+            <artifactId>beikbank-gen</artifactId>
+            <version>${cy-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.beikbank</groupId>
+            <artifactId>beikbank-shiro</artifactId>
+            <version>${cy-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.beikbank</groupId>
+            <artifactId>beikbank-common</artifactId>
+            <version>${cy-version}</version>
+        </dependency>
+    </dependencies>
+	<build>
+		<finalName>beikbank-security</finalName>
+	</build>
+	
+</project>
